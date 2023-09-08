@@ -1,0 +1,101 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Инициализация драйвера браузера
+# Пример для Firefox:
+driver = webdriver.Firefox()
+
+
+# Теперь давайте перейдем к тестированию регистрации пользователя
+driver.get("https://github.com")
+
+# Нажать на ссылку "Sign up"
+sign_up_link = driver.find_element(By.LINK_TEXT, "Sign up")
+sign_up_link.click()
+wait = WebDriverWait(driver, 15)
+time.sleep(4)
+# Находим поле "email" по его name атрибуту и вводим данные
+# Найдите элемент по имени
+email_field = driver.find_element(By.NAME, 'user[email]')
+
+email_field.send_keys('examdfdfdfdfdfple@gmail.com')
+
+time.sleep(1)
+
+# Ожидание, пока элемент с id "email-container" не станет видимым
+wait = WebDriverWait(driver, 15)
+email_container = wait.until(EC.visibility_of_element_located((By.ID, "email-container")))
+
+# Теперь находим кнопку "Continue" по атрибуту data-continue-to
+continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
+
+
+# Проверьте атрибут disabled
+if not continue_button.get_attribute('disabled'):
+    # Если кнопка не заблокирована, нажмите на нее
+    continue_button.click()
+else:
+    print("Мыло инвалид")
+
+
+# Найти поле ввода для пароля
+password_field = driver.find_element(By.NAME, "user[password]")
+
+
+# Ввести пароль
+password_field.send_keys("Password123nesamynadejny")
+time.sleep(4)
+# Подождать, пока контейнер с паролем не станет видимым
+password_container = wait.until(EC.visibility_of_element_located((By.ID, "password-container")))
+
+# Теперь находим кнопку "Continue" по атрибуту data-continue-to
+continue_button_password = password_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='username-container']")
+
+# Проверьте атрибут disabled
+if not continue_button_password.get_attribute('disabled'):
+    # Если кнопка не заблокирована, нажмите на нее
+    continue_button_password.click()
+else:
+    print("Пароль Инвалид")
+time.sleep(3)
+
+# Найти поле ввода для имени пользователя
+username_field = driver.find_element(By.ID, "login")
+
+# Ввести имя пользователя (замените 'your_username' на желаемое имя пользователя)
+username_field.send_keys('usernameprostoyobichny')
+
+time.sleep(3)
+
+# Найти кнопку "Continue" для имени пользователя
+continue_button_username = driver.find_element(By.CSS_SELECTOR, "button[data-continue-to='opt-in-container']")
+
+# Проверьте атрибут disabled
+if not continue_button_username.get_attribute('disabled'):
+    # Если кнопка не заблокирована, нажмите на нее
+    continue_button_username.click()
+else:
+    print("Юзернэйм инвалид")
+
+time.sleep(2)
+# Найти поле ввода для опции "opt_in"
+opt_in_field = driver.find_element(By.ID, "opt_in")
+
+# Ввести значение для опции (замените 'your_option_value' на желаемое значение)
+opt_in_field.send_keys('Y')
+
+time.sleep(2)
+
+# Найти кнопку "Continue" для опции
+continue_button_opt_in = driver.find_element(By.CSS_SELECTOR, "button[data-continue-to='captcha-and-submit-container'][data-optimizely-event='click.signup_continue.opt-in']")
+
+# Проверьте атрибут disabled
+if not continue_button_opt_in.get_attribute('disabled'):
+    # Если кнопка не заблокирована, нажмите на нее
+    continue_button_opt_in.click()
+else:
+    print("Да, нет? Непонятно")
