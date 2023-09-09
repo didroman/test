@@ -12,7 +12,10 @@ def main():
 
         sign_up(driver)
         test_invalid_email_with_special_characters(driver)
+        test_email_with_space_at_beginning(driver)
+        test_email_with_space_at_end(driver)
         test_email_without_at_symbol(driver)
+        test_email_without_dot(driver)
         test_email_too_long(driver)
 
     except Exception as e:
@@ -38,12 +41,45 @@ def test_invalid_email_with_special_characters(driver):
     continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
 
     if not continue_button.get_attribute('disabled'):
-        print("Тест не пройден: спецсимволы в email Валид")
+        print("Тест не пройден: спецсимволы в email = Валид")
     else:
-        print("Тест пройден: спецсимволы в email Инвалид")
+        print("Тест пройден: спецсимволы в email = Инвалид")
 
-    time.sleep(2)
+    time.sleep(1)
 
+def test_email_with_space_at_beginning(driver):
+    wait = WebDriverWait(driver, 15)
+    # Ввод email с пробелом в начале
+    email_field = driver.find_element(By.NAME, 'user[email]')
+    email_field.clear()
+    email_field.send_keys(' example@gmail.com')  # Пробел в начале email
+    time.sleep(1)
+    email_container = wait.until(EC.visibility_of_element_located((By.ID, "email-container")))
+    continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
+
+    if not continue_button.get_attribute('disabled'):
+        print("Тест не пройден: пробел в начале email = Валид")
+    else:
+        print("Тест пройден: пробел в начале email = Инвалид")
+
+    time.sleep(1)
+
+def test_email_with_space_at_end(driver):
+    wait = WebDriverWait(driver, 15)
+    # Ввод email с пробелом в конце
+    email_field = driver.find_element(By.NAME, 'user[email]')
+    email_field.clear()
+    email_field.send_keys('example@gmail.com ')  # Пробел в конце email
+    time.sleep(1)
+    email_container = wait.until(EC.visibility_of_element_located((By.ID, "email-container")))
+    continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
+
+    if not continue_button.get_attribute('disabled'):
+        print("Тест не пройден: пробел в конце email = Валид")
+    else:
+        print("Тест пройден: пробел в конце email = Инвалид")
+
+    time.sleep(1)
 
 # Функция для ввода email без символа @
 def test_email_without_at_symbol(driver):
@@ -57,11 +93,30 @@ def test_email_without_at_symbol(driver):
     continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
 
     if not continue_button.get_attribute('disabled'):
-        print("Тест не пройден: отсутствие символа @ в email Валид")
+        print("Тест не пройден: отсутствие символа @ в email = Валид")
     else:
-        print("Тест пройден: отсутствие символа @ Инвалид")
+        print("Тест пройден: отсутствие символа @ = Инвалид")
 
-    time.sleep(2)
+    time.sleep(1)
+
+
+# Функция для ввода email без символа .
+def test_email_without_dot(driver):
+    wait = WebDriverWait(driver, 15)
+    # Ввод недопустимого email без символа @
+    email_field = driver.find_element(By.NAME, 'user[email]')
+    email_field.clear()  # Очистим поле перед вводом
+    email_field.send_keys('exampletakexample@gmailcom')  # Вставляем email без символа .
+    time.sleep(1)
+    email_container = wait.until(EC.visibility_of_element_located((By.ID, "email-container")))
+    continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
+
+    if not continue_button.get_attribute('disabled'):
+        print("Тест не пройден: отсутствие символа . в email = Валид")
+    else:
+        print("Тест пройден: отсутствие символа . = Инвалид")
+
+    time.sleep(1)
 
 # Функция для ввода слишком длинного email
 def test_email_too_long(driver):
@@ -75,11 +130,11 @@ def test_email_too_long(driver):
     continue_button = email_container.find_element(By.CSS_SELECTOR, "button[data-continue-to='password-container']")
 
     if not continue_button.get_attribute('disabled'):
-        print("Тест не пройден: email слишком длинный Валид")
+        print("Тест не пройден: email слишком длинный = Валид")
     else:
-        print("Тест пройден: email слишком длинный Инвалид")
+        print("Тест пройден: email слишком длинный = Инвалид")
 
-    time.sleep(2)
+    time.sleep(1)
 
 if __name__ == "__main__":
     main()
