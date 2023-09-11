@@ -1,0 +1,40 @@
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+def create_repository(username, password, repository_name):
+    # Опции для веб-драйвера Firefox
+    firefox_options = webdriver.FirefoxOptions()
+    # Опция для запуска в "безголовом" режиме (можно убрать, если не нужно)
+    # firefox_options.add_argument('--headless')
+    driver = webdriver.Firefox(options=firefox_options)
+
+    try:
+        # Шаг 1: Вход в аккаунт GitHub
+        driver.get('https://github.com/login')
+        driver.find_element(By.ID, 'login_field').send_keys(username)
+        driver.find_element(By.ID, 'password').send_keys(password)
+        driver.find_element(By.NAME, 'commit').click()
+
+        # Подождем, чтобы убедиться, что вход выполнен (может потребоваться увеличить время)
+        time.sleep(3)
+
+        # Шаг 2: Создание нового репозитория
+        driver.get('https://github.com/new')
+        driver.find_element(By.XPATH, "//input[@aria-label='Repository']").send_keys(repository_name)
+        time.sleep(2)  # Подождите, чтобы гарантировать, что название репозитория принято
+        driver.find_element(By.CSS_SELECTOR, 'input[data-testid="description"]').send_keys(repository_description)
+        # Найдем кнопку "Create repository" по тексту
+        driver.find_element(By.XPATH, "//span[contains(text(), 'Create repository')]").click()
+
+    finally:
+        # Шаг 4: Завершение сеанса Selenium
+        driver.quit()
+
+if __name__ == "__main__":
+    # Замените следующими переменными вашими данными
+    username = 'testaccforgithub001'
+    password = 'rtmdnqjh4av4tdc'
+    repository_name = 'test4'
+    repository_description = 'test description4'
+    create_repository(username, password, repository_name)
