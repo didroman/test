@@ -1,0 +1,25 @@
+import requests
+
+def check_repository(username, repository_name, access_token):
+    # Шаг 3: Получение информации о созданном репозитории через GitHub API
+    url = f'https://api.github.com/repos/{username}/{repository_name}'
+    headers = {
+        'Authorization': f'token {access_token}'
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        repo_info = response.json()
+        print(f"Создан новый репозиторий:\n"
+              f"Имя: {repo_info['name']}\n"
+              f"Описание: {repo_info['description']}\n"
+              f"URL: {repo_info['html_url']}")
+    else:
+        print(f"Не удалось выполнить запрос к GitHub API. Код состояния: {response.status_code}")
+
+if __name__ == "__main__":
+    # Замените следующими переменными вашими данными
+    username = 'testaccforgithub001'
+    repository_name = 'test1'
+    access_token = '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'
+    check_repository(username, repository_name, access_token)
