@@ -1,0 +1,63 @@
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+# Укажите свой токен доступа GitHub
+github_token = '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'
+
+# Укажите свой логин и пароль GitHub
+username = 'testaccforgithub001'
+password = 'rtmdnqjh4av4tdc'
+
+# Укажите данные для создания нового репозитория
+repo_name = 'my-test-repo'
+repo_description = 'This is a test repository'
+repo_private = False  # Установите True, если хотите создать приватный репозиторий
+
+# Инициализируйте браузер Firefox с помощью WebDriver
+driver = webdriver.Firefox()
+
+def test_authentication_error():
+    # Тестирование ошибки аутентификации
+    print("Тестирование ошибки аутентификации...")
+
+    # Отправляем GET-запрос без токена доступа
+    response = requests.get("https://api.github.com/user")
+
+    # Проверяем, что сервер вернул статус код 401 Unauthorized
+    assert response.status_code == 401, "Ошибка: Ожидался статус код 401 Unauthorized"
+    print("Ошибка аутентификации успешно обработана.")
+
+def test_not_found_error():
+    # Тестирование ошибки при попытке доступа к несуществующему ресурсу
+    print("Тестирование ошибки при попытке доступа к несуществующему ресурсу...")
+
+    # Отправляем GET-запрос к несуществующему репозиторию
+    headers = {"Authorization": f"token {github_token}"}
+    response = requests.get("https://api.github.com/repos/nonexistentuser/nonexistent-repo12dgsdgsfg345", headers=headers)
+
+    # Проверяем, что сервер вернул статус код 404 Not Found
+    assert response.status_code == 404, "Ошибка: Ожидался статус код 404 Not Found"
+    print("Ошибка при доступе к несуществующему ресурсу успешно обработана.")
+
+
+try:
+    # Шаг 1: Вход в аккаунт GitHub
+    driver.get('https://github.com/login')
+    driver.find_element(By.ID, 'login_field').send_keys(username)
+    driver.find_element(By.ID, 'password').send_keys(password)
+    driver.find_element(By.NAME, 'commit').click()
+
+    # Подождите несколько секунд, чтобы страница прогрузилась
+    time.sleep(5)
+
+    # Вызываем функции для тестирования ошибок и исключительных ситуаций
+    test_authentication_error()
+    test_not_found_error()
+
+
+finally:
+    # Закройте браузер после завершения теста
+    driver.quit()
