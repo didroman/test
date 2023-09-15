@@ -1,25 +1,36 @@
 import requests
 
 def check_repository(username, repository_name, access_token):
-    # Шаг 3: Получение информации о созданном репозитории через GitHub API
+    # Проверка наличия входных данных
+    if not username or not repository_name or not access_token:
+        print("Ошибка: Пожалуйста, укажите корректные данные.")
+        return
+
+    # Формирование URL для запроса к GitHub API
     url = f'https://api.github.com/repos/{username}/{repository_name}'
     headers = {
         'Authorization': f'token {access_token}'
     }
-    response = requests.get(url, headers=headers)
 
-    if response.status_code == 200:
-        repo_info = response.json()
-        print(f"Создан новый репозиторий:\n"
-              f"Имя: {repo_info['name']}\n"
-              f"Описание: {repo_info['description']}\n"
-              f"URL: {repo_info['html_url']}")
-    else:
-        print(f"Не удалось выполнить запрос к GitHub API. Код состояния: {response.status_code}")
+    try:
+        response = requests.get(url, headers=headers)
+
+        # Проверка статуса ответа
+        if response.status_code == 200:
+            repo_info = response.json()
+            # Вывод информации о репозитории
+            print(f"Создан новый репозиторий:")
+            print(f"Имя: {repo_info['name']}")
+            print(f"Описание: {repo_info['description']}")
+            print(f"URL: {repo_info['html_url']}")
+        else:
+            print(f"Не удалось выполнить запрос к GitHub API. Код состояния: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка при выполнении запроса: {e}")
 
 if __name__ == "__main__":
     # Замените следующими переменными вашими данными
     username = 'testaccforgithub001'
     repository_name = 'test1'
-    access_token = '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'
+    access_token = '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'
     check_repository(username, repository_name, access_token)
