@@ -1,0 +1,44 @@
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+# Укажите свой токен доступа GitHub
+github_token = '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'
+
+# Укажите свой логин и пароль GitHub
+username = 'testaccforgithub001'
+password = 'rtmdnqjh4av4tdc'
+
+# Инициализируйте браузер Firefox с помощью WebDriver
+driver = webdriver.Firefox()
+
+try:
+    # Шаг 1: Вход в аккаунт GitHub
+    driver.get('https://github.com/login')
+    driver.find_element(By.ID, 'login_field').send_keys(username)
+    driver.find_element(By.ID, 'password').send_keys(password)
+    driver.find_element(By.NAME, 'commit').click()
+
+    # Подождите несколько секунд, чтобы страница прогрузилась
+    time.sleep(5)
+
+    # Отправьте GET-запрос к /user с использованием токена доступа
+    headers = {"Authorization": f"token {github_token}"}
+    response = requests.get("https://api.github.com/user", headers=headers)
+
+    # Проверьте, что ответ содержит корректные данные о текущем пользователе
+    user_data = response.json()
+
+    assert response.status_code == 200, "Не удалось выполнить GET-запрос к /user"
+    assert user_data.get("login") == username, "Некорректное имя пользователя"
+
+    # Вывод максимально возможного количества данных о текущем пользователе
+    print("Тест успешно выполнен. Данные о текущем пользователе проверены.")
+    for key, value in user_data.items():
+        print(f"{key}: {value}")
+
+finally:
+    # Закройте браузер после завершения теста
+    driver.quit()
