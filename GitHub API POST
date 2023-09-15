@@ -1,0 +1,59 @@
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+# Укажите свой токен доступа GitHub
+github_token = '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'
+
+# Укажите свой логин и пароль GitHub
+username = 'testaccforgithub001'
+password = 'rtmdnqjh4av4tdc'
+
+# Укажите данные для создания нового репозитория
+repo_name = 'my-test-repo'
+repo_description = 'This is a test repository'
+repo_private = False  # Установите True, если хотите создать приватный репозиторий
+
+# Инициализируйте браузер Firefox с помощью WebDriver
+driver = webdriver.Firefox()
+
+try:
+    # Шаг 1: Вход в аккаунт GitHub
+    driver.get('https://github.com/login')
+    driver.find_element(By.ID, 'login_field').send_keys(username)
+    driver.find_element(By.ID, 'password').send_keys(password)
+    driver.find_element(By.NAME, 'commit').click()
+
+    # Подождите несколько секунд, чтобы страница прогрузилась
+    time.sleep(5)
+
+    # Отправьте POST-запрос к /user/repos для создания нового репозитория
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/json"
+    }
+    data = {
+        "name": repo_name,
+        "description": repo_description,
+        "private": repo_private
+    }
+    response = requests.post("https://api.github.com/user/repos", headers=headers, json=data)
+
+    # Проверьте, что репозиторий успешно создан и в ответе содержатся корректные данные о нем
+    repo_data = response.json()
+
+    assert response.status_code == 201, "Не удалось создать репозиторий"
+    assert repo_data.get("name") == repo_name, "Некорректное название репозитория"
+    assert repo_data.get("description") == repo_description, "Некорректное описание репозитория"
+
+    # Вывод информации о созданном репозитории
+    print("Репозиторий успешно создан. Данные о репозитории:")
+    print(f"Название: {repo_data.get('name')}")
+    print(f"Описание: {repo_data.get('description')}")
+    print(f"Приватный: {repo_data.get('private')}")
+
+finally:
+    # Закройте браузер после завершения теста
+    driver.quit()
